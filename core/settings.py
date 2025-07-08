@@ -1,12 +1,14 @@
 import environ
 from pathlib import Path
 
-env = environ.Env()
-environ.Env.read_env()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+env = environ.Env()
+environ.Env.read_env( BASE_DIR / '.env' )
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -25,17 +27,27 @@ ALLOWED_HOSTS = []
 MY_APPS = [
     'my_apps.users.apps.UsersConfig',
     'my_apps.dapco.apps.DapcoConfig',
+    'theme',
+]
+
+OTHER_APPS = [
+    'tailwind',
 ]
 
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-] + MY_APPS
+]
+
+
+INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS  
+
+TAILWIND_APP_NAME = 'theme'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,6 +60,11 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
+
+if DEBUG:
+    INTERNAL_IPS = ["127.0.0.1"]
+    MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
+    INSTALLED_APPS += ['django_browser_reload']
 
 TEMPLATES = [
     {
@@ -120,6 +137,10 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# LOGIN_REDIRECT_URL = '/'
+
+# LOGOUT_REDIRECT_URL = '/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
