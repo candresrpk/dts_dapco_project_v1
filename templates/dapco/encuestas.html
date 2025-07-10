@@ -1,0 +1,15 @@
+{% extends '../base.html' %}
+
+
+
+{% block content %}
+
+
+    {% for encuesta in encuestas %}
+
+        {{encuesta.usuario.cargo}}
+    
+    {% endfor %}
+
+
+{% endblock  %}

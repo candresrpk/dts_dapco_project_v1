@@ -1,57 +1,42 @@
-<nav class="bg-white border-b border-gray-200 shadow-sm">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between h-16 items-center">
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm">
+  <div class="container-fluid">
+    <!-- Logo -->
+    <a class="navbar-brand text-success fw-bold" href="/">Dapco</a>
 
-      <!-- Logo o nombre del sistema -->
-      <div class="flex-shrink-0">
-        <a href="/" class="text-xl font-bold text-green-600">Dapco</a>
-      </div>
+    <!-- Botón hamburguesa -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      <!-- Navegación principal -->
-      <div class="hidden md:flex space-x-6">
-        <a href="#" class="text-gray-700 hover:text-indigo-600 font-medium">Cuotas</a>
-        <a href="#" class="text-gray-700 hover:text-indigo-600 font-medium">Encuestas</a>
-        <a href="#" class="text-gray-700 hover:text-indigo-600 font-medium">Estadísticas</a>
-        <a href="#" class="text-gray-700 hover:text-indigo-600 font-medium">Usuarios</a>
-      </div>
+    <!-- Contenido del navbar -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <!-- Enlaces principales -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link text-success fw-medium" href="#">Cuotas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-success fw-medium" href="#">Encuestas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-success fw-medium" href="#">Estadísticas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-success fw-medium" href="#">Usuarios</a>
+        </li>
+      </ul>
 
-      <!-- Usuario o sesión -->
-      <div class="hidden md:flex items-center space-x-4">
-        <span class="text-sm text-gray-600">Hola, Andrés</span>
-        <a href="#" class="text-sm text-red-600 hover:underline">Cerrar sesión</a>
-      </div>
-
-      <!-- Botón para menú móvil -->
-      <div class="md:hidden">
-        <button type="button" id="menu-toggle" class="text-gray-600 hover:text-indigo-600 focus:outline-none">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-               viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
-      </div>
+      <!-- Autenticación -->
+      {% if request.user.is_authenticated %}
+        <span class="navbar-text me-3 text-muted">
+          Hola, {{ request.user.username }}
+        </span>
+        <a href="{% url 'users:logout' %}" class="btn btn-outline-danger btn-sm">Cerrar sesión</a>
+      {% else %}
+        <a href="{% url 'users:login' %}" class="btn btn-outline-success btn-sm me-2">Iniciar sesión</a>
+        <a href="{% url 'users:register' %}" class="btn btn-success btn-sm">Crear cuenta</a>
+      {% endif %}
     </div>
   </div>
-
-  <!-- Menú móvil -->
-  <div id="mobile-menu" class="md:hidden hidden px-4 pt-2 pb-4 space-y-2">
-    <a href="#" class="block text-gray-700 hover:text-indigo-600 font-medium">Cuotas</a>
-    <a href="#" class="block text-gray-700 hover:text-indigo-600 font-medium">Encuestas</a>
-    <a href="#" class="block text-gray-700 hover:text-indigo-600 font-medium">Estadísticas</a>
-    <a href="#" class="block text-gray-700 hover:text-indigo-600 font-medium">Usuarios</a>
-    <a href="#" class="block text-red-600 hover:underline text-sm">Cerrar sesión</a>
-  </div>
 </nav>
-
-
-<script>
-  // Alternar visibilidad del menú móvil
-  document.addEventListener("DOMContentLoaded", function () {
-    const toggle = document.getElementById("menu-toggle");
-    const menu = document.getElementById("mobile-menu");
-    toggle.addEventListener("click", () => {
-      menu.classList.toggle("hidden");
-    });
-  });
-</script>

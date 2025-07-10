@@ -1,9 +1,22 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 class CustomUser(models.Model):
-    pass
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    cargo = models.CharField(max_length=100)
+    
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'usuario'
+        verbose_name_plural = 'usuarios'
+    
+    def __str__(self):
+        return f'{self.user}'
 
 
 class Encuesta(models.Model):
@@ -19,7 +32,21 @@ class Encuesta(models.Model):
 
     def __str__(self):
         return f'Encuesta: {self.nombre} - creada por {self.administrador}'
+
+
+class PermisosEncuestas(models.Model):
+    usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    encuesta = models.ForeignKey(Encuesta, on_delete=models.CASCADE)
     
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'permiso'
+        verbose_name_plural = 'permisos'
+        
+    def __str__(self):
+        return f'{self.encuesta} - {self.usuario}'
     
 
 class Distribucion(models.Model):
@@ -65,6 +92,7 @@ class Pregunta(models.Model):
 
 class Opcion(models.Model):
     opcion = models.CharField(max_length=100)
+    imagen = models.ImageField(upload_to='opciones', null=True, blank=True)
     pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
     
     created_at = models.DateTimeField(auto_now_add=True)

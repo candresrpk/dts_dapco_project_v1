@@ -27,11 +27,9 @@ ALLOWED_HOSTS = []
 MY_APPS = [
     'my_apps.users.apps.UsersConfig',
     'my_apps.dapco.apps.DapcoConfig',
-    'theme',
 ]
 
 OTHER_APPS = [
-    'tailwind',
 ]
 
 
@@ -47,11 +45,10 @@ DJANGO_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS  
 
-TAILWIND_APP_NAME = 'theme'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -60,11 +57,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
-
-if DEBUG:
-    INTERNAL_IPS = ["127.0.0.1"]
-    MIDDLEWARE += ["django_browser_reload.middleware.BrowserReloadMiddleware"]
-    INSTALLED_APPS += ['django_browser_reload']
 
 TEMPLATES = [
     {
