@@ -4,8 +4,14 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 class CustomUser(models.Model):
+    
+    class CargoChoices(models.TextChoices):
+        ADMIN = 'Admin', 'Administrador'
+        ENCUESTADOR = 'Encuestador', 'Encuestador'
+    
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    cargo = models.CharField(max_length=100)
+    cargo = models.CharField(max_length=20, choices=CargoChoices.choices, default=CargoChoices.ENCUESTADOR)
     
     
     created_at = models.DateTimeField(auto_now_add=True)
@@ -32,6 +38,26 @@ class Encuesta(models.Model):
 
     def __str__(self):
         return f'Encuesta: {self.nombre} - creada por {self.administrador}'
+    
+    def conteo_distribuciones_vs_respuestas(self):
+        """
+        Devuelve un dict con:
+        - total_distribuciones
+        - total_respuestas
+        - faltantes (distribuciones - respuestas)
+        """
+        total_distribuciones = self.distribucion_set.count()
+
+        # Total de respuestas asociadas a esta encuesta
+        total_respuestas = Respuesta.objects.filter(
+            pregunta__encuesta=self
+        ).count()
+
+        return {
+            "total_distribuciones": total_distribuciones,
+            "total_respuestas": total_respuestas,
+            "faltantes": max(total_distribuciones - total_respuestas, 0)
+        }
 
 
 class PermisosEncuestas(models.Model):
@@ -52,11 +78,11 @@ class PermisosEncuestas(models.Model):
 class Distribucion(models.Model):
     edad = models.IntegerField()
     sexo = models.CharField(max_length=1)
-    barrio = models.CharField(max_length=3)
+    barrio = models.CharField(max_length=250)
     estrato = models.IntegerField()
     
     usuario = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    encuesta = models.ForeignKey(Encuesta, on_delete=models.CASCADE)
+    encuesta = models.ForeignKey(Encuesta, on_delete=models.CASCADE, related_name='distribucion_set')
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -77,7 +103,7 @@ class Pregunta(models.Model):
     
     pregunta = models.CharField(max_length=100)
     tipo = models.CharField(max_length=100, choices=TipoChoiches.choices, default=TipoChoiches.Opciones)
-    encuesta = models.ForeignKey(Encuesta, on_delete=models.CASCADE)
+    encuesta = models.ForeignKey(Encuesta, on_delete=models.CASCADE, related_name='pregunta_set')
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -110,7 +136,7 @@ class Opcion(models.Model):
 class Respuesta(models.Model):
     
     encuestador = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)    
+    pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE, related_name='respuesta_set')    
     opcion = models.ForeignKey(Opcion, on_delete=models.CASCADE)
     
     created_at = models.DateTimeField(auto_now_add=True)

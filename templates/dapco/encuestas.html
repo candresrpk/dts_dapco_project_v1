@@ -1,15 +1,82 @@
 {% extends '../base.html' %}
-
+{% load mathfilters %}
 
 
 {% block content %}
 
+    <h2 class="text-center text-success mb-4">Encuestas</h2>
 
-    {% for encuesta in encuestas %}
+    <div class="row">
+        {% for encuesta in encuestas %}
+            {% with datos=encuesta.encuesta.conteo_distribuciones_vs_respuestas %}
+                <div class="col-12 col-md-6 col-lg-4 mb-4">
+                    {% comment %} {% url 'detalle_encuesta' encuesta.id %} {% endcomment %}
+                    <a href="" class="text-decoration-none text-dark">
+                        <div class="card shadow-sm h-100 border-success">
+                            <div class="card-body">
+                                <h5 class="card-title text-success">
+                                    {{ encuesta.encuesta.nombre }}
+                                </h5>
 
-        {{encuesta.usuario.cargo}}
+                                <!-- Conteo -->
+                                <p class="mb-1">
+                                    Distribuciones: <strong>{{ datos.total_distribuciones }}</strong>
+                                </p>
+                                <p class="mb-2">
+                                    Respuestas: <strong>{{ datos.total_respuestas }}</strong>
+                                </p>
+
+                                <!-- Barra de progreso -->
+                                {% if datos.total_distribuciones > 0 %}
+                                    <div class="progress" style="height: 25px; position: relative; background-color: #e9ecef;">
+                                        <!-- Barra verde -->
+                                        <div 
+                                            class="progress-bar bg-success" 
+                                            role="progressbar" 
+                                            style="
+                                                width: {{ datos.total_respuestas|mul:100|div:datos.total_distribuciones }}%;
+                                                min-width: 2%;"
+                                            aria-valuenow="{{ datos.total_respuestas }}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="{{ datos.total_distribuciones }}">
+                                        </div>
+
+                                        <!-- Texto centrado -->
+                                        <span style="
+                                            position: absolute;
+                                            top: 50%;
+                                            left: 50%;
+                                            transform: translate(-50%, -50%);
+                                            font-weight: bold;
+                                            color: #000;
+                                            padding: 2px 6px;
+                                            border-radius: 4px;
+                                            text-align: center;">
+                                            {{ datos.total_respuestas }} / {{ datos.total_distribuciones }}
+                                        </span>
+                                    </div>
+                                {% else %}
+                                    <div class="progress" style="height: 25px;">
+                                        <div class="progress-bar bg-secondary" style="width: 100%;">
+                                            Sin distribuciones
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
     
-    {% endfor %}
+
+    {% if not encuestas %}
+        <div class="alert alert-info text-center" role="alert">
+            No hay encuestas disponibles.
+        </div>
+    {% endif %}
 
 
 {% endblock  %}

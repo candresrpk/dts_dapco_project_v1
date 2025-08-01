@@ -14,6 +14,7 @@ def encuestas_view(request):
     
     encuestas = PermisosEncuestas.objects.filter(usuario=user)
     
+    
     context = {
         'encuestas':encuestas,
     }

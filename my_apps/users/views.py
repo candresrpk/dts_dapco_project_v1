@@ -21,7 +21,7 @@ def login_view(request):
                 messages.error(request, "Error en el inicio de sesión. Por favor, verifica tus credenciales.")
         else:
             messages.error(request, "Error en el inicio de sesión. Por favor, verifica tus credenciales.")
-    else:\
+    else:
         form = AuthenticationForm()
     return render(request, 'usuarios/login.html', {'form': form})
 
@@ -43,6 +43,23 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'usuarios/singup.html', {'form': form})
 
+
+
+def create_admin_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            customer_user = CustomUser.objects.create(user=user, cargo="Administrador")
+            customer_user.save()
+            login(request, user)
+            messages.success(request, f"{user.username} Registrado exitoso.")
+            return redirect('dapco:encuestas')
+        else:
+            messages.error(request, "Error en el registro. Por favor, verifica los campos.")
+    else:
+        form = UserCreationForm()
+    return render(request, 'usuarios/singup.html', {'form': form})
 
 
 def logout_view(request):
