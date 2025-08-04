@@ -7,5 +7,4 @@ urlpatterns = [
     # path('', include('my_apps.users.urls')),
     path('', include('my_apps.dapco.urls')),
     path('users/', include('my_apps.users.urls')),
-    
 ]

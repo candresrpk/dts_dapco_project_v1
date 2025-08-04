@@ -10,8 +10,7 @@
         {% for encuesta in encuestas %}
             {% with datos=encuesta.encuesta.conteo_distribuciones_vs_respuestas %}
                 <div class="col-12 col-md-6 col-lg-4 mb-4">
-                    {% comment %} {% url 'detalle_encuesta' encuesta.id %} {% endcomment %}
-                    <a href="" class="text-decoration-none text-dark">
+                    <a href="{% url "dapco:encuesta_detail" encuesta.id %}" class="text-decoration-none text-dark">
                         <div class="card shadow-sm h-100 border-success">
                             <div class="card-body">
                                 <h5 class="card-title text-success">
